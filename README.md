@@ -16,6 +16,7 @@ GET http://localhost:8080/score/?handle=TaylorSwift13
 #### Example Response
 ```
 {
+	"handle": TaylorSwift13,
 	"score": 2.0
 }
 ```
