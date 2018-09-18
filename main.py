@@ -24,7 +24,10 @@ def score(handle: str) -> dict:
     try:
         tweets = request_tweets(handle, num_tweets=10)
         lemmatized = lemmatize(" ".join(request_tweets(handle, num_tweets=10)))
-        return { "score": compute_score(lemmatized) }
+        return {
+            "score": compute_score(lemmatized),
+            "handle": handle
+        }
     except TweepError:
         return {
             "errors": { "handle": "the user @{} does not exist".format(handle) }
@@ -41,7 +44,10 @@ def fetch_tweets(handle: str, num_tweets: int) -> dict:
     Returns: A list of all tweets. An empty list if the user does not exist.
     """
     try:
-        return { "tweets": request_tweets(handle, num_tweets=num_tweets) }
+        return {
+            "tweets": request_tweets(handle, num_tweets=num_tweets),
+            "handle": handle
+        }
     except TweepError:
         return {
             "errors": { "handle": "The user @{} does not exist".format(handle) }
@@ -59,7 +65,10 @@ def count_num_tweets(handle: str) -> dict:
     Returns: number of tweets. -1 if the user does not exist.
     """
     try:
-        return { "count": count_tweets(handle) }
+        return {
+            "count": count_tweets(handle),
+            "handle": handle
+        }
     except TweepError:
         return {
             "errors": { "handle": "The user @{} does not exist.".format(handle) }
