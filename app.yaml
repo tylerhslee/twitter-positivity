@@ -1,0 +1,6 @@
+---
+runtime: python37
+service: twitter-positivity
+api_version: 1
+
+entrypoint: gunicorn -b :$PORT main:__hug_wsgi__
