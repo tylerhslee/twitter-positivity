@@ -10,7 +10,7 @@ REST API for performing sentiment analysis on tweets.
 
 #### Example Request
 ```bash
-GET http://localhost:8080/?handle=TaylorSwift13
+GET http://localhost:8080/score/?handle=TaylorSwift13
 ```
 
 #### Example Response

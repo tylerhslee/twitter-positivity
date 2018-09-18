@@ -12,7 +12,7 @@ from nlp.processor import lemmatize, compute_score
 
 
 @hug.get()
-def score(handle: str, resonse=None) -> int:
+def score(handle: str) -> dict:
     """
     Responds with the sentiment score of the user.
 
@@ -24,13 +24,15 @@ def score(handle: str, resonse=None) -> int:
     try:
         tweets = request_tweets(handle, num_tweets=10)
         lemmatized = lemmatize(" ".join(request_tweets(handle, num_tweets=10)))
-        return compute_score(lemmatized)
+        return { "score": compute_score(lemmatized) }
     except TweepError:
-        return 404
+        return {
+            "errors": { "handle": "the user @{} does not exist".format(handle) }
+        }
 
 
-@hug.get('/tweet')
-def fetch_tweets(handle: str, num_tweets: int) -> list:
+@hug.get('/tweets')
+def fetch_tweets(handle: str, num_tweets: int) -> dict:
     """
     Args:
         handle     (str): Twitter handle of the user
@@ -39,13 +41,15 @@ def fetch_tweets(handle: str, num_tweets: int) -> list:
     Returns: A list of all tweets. An empty list if the user does not exist.
     """
     try:
-        return request_tweets(handle, num_tweets=num_tweets)
+        return { "tweets": request_tweets(handle, num_tweets=num_tweets) }
     except TweepError:
-        return []
+        return {
+            "errors": { "handle": "The user @{} does not exist".format(handle) }
+        }
 
 
 @hug.get('/count')
-def count_num_tweets(handle: str) -> int:
+def count_num_tweets(handle: str) -> dict:
     """
     Counts the number of tweets the user has posted.
 
@@ -55,9 +59,11 @@ def count_num_tweets(handle: str) -> int:
     Returns: number of tweets. -1 if the user does not exist.
     """
     try:
-        return count_tweets(handle)
+        return { "count": count_tweets(handle) }
     except TweepError:
-        return -1
+        return {
+            "errors": { "handle": "The user @{} does not exist.".format(handle) }
+        }
 
 
 app = __hug_wsgi__
