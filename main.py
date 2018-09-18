@@ -23,5 +23,7 @@ def count_num_tweets(handle: str):
     return count_tweets(handle)
 
 
+app = __hug_wsgi__
+
 if __name__ == '__main__':
     print(score('realDonaldTrump'))
