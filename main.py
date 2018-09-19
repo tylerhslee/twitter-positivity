@@ -6,7 +6,7 @@ Test script
 """
 import hug
 
-from twitter import request_tweets, count_tweets
+from twitter import request_tweets, count_tweets, follow_followers
 from tweepy.error import TweepError
 from nlp.processor import lemmatize, compute_score
 
@@ -21,6 +21,8 @@ def score(handle: str) -> dict:
 
     Returns: The sentiment score of the user. 404 if the user is not found.
     """
+    if handle[0] != "@":
+        handle = "@" + handle;
     try:
         tweets = request_tweets(handle, num_tweets=10)
         lemmatized = lemmatize(" ".join(request_tweets(handle, num_tweets=10)))
@@ -28,9 +30,9 @@ def score(handle: str) -> dict:
             "score": compute_score(lemmatized),
             "handle": handle
         }
-    except TweepError:
+    except TweepError as e:
         return {
-            "errors": { "handle": "the user @{} does not exist".format(handle) }
+            "errors": str(e)
         }
 
 
@@ -43,6 +45,8 @@ def fetch_tweets(handle: str, num_tweets: int) -> dict:
 
     Returns: A list of all tweets. An empty list if the user does not exist.
     """
+    if handle[0] != "@":
+        handle = "@" + handle;
     try:
         return {
             "tweets": request_tweets(handle, num_tweets=num_tweets),
@@ -50,7 +54,7 @@ def fetch_tweets(handle: str, num_tweets: int) -> dict:
         }
     except TweepError:
         return {
-            "errors": { "handle": "The user @{} does not exist".format(handle) }
+            "errors": { "handle": "The user {} does not exist".format(handle) }
         }
 
 
@@ -64,6 +68,8 @@ def count_num_tweets(handle: str) -> dict:
 
     Returns: number of tweets. -1 if the user does not exist.
     """
+    if handle[0] != "@":
+        handle = "@" + handle;
     try:
         return {
             "count": count_tweets(handle),
@@ -71,12 +77,24 @@ def count_num_tweets(handle: str) -> dict:
         }
     except TweepError:
         return {
-            "errors": { "handle": "The user @{} does not exist.".format(handle) }
+            "errors": { "handle": "The user {} does not exist.".format(handle) }
         }
+
+
+@hug.get('/list')
+def find_many_tweeters() -> dict:
+    """
+    Returns:
+        A list of many, many tweeters
+    """
+    ret = []
+    cursor = follow_followers("bluebeagle2")
+    for ids in cursor:
+        ret.extend(ids)
+    return ret
 
 
 app = __hug_wsgi__
 
 if __name__ == '__main__':
-    import sys
-    print(score(sys.argv[1]))
+    print(find_many_tweeters())

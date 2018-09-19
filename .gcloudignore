@@ -17,3 +17,6 @@
 __pycache__/
 
 .venv/
+
+data/
+many_scores.py
