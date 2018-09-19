@@ -5,8 +5,9 @@ REST API for performing sentiment analysis on tweets.
 ## `GET` /score
 ### Parameters
 #### URI Parameters
-| Field | Data Type | Required | Description |
-| handle | string | Yes | Twitter handle of the user |
+Field | Data Type | Required | Description
+----- | ------ | ------ | ------
+handle | string | Yes | Twitter handle of the user
 
 #### Example Request
 ```bash
