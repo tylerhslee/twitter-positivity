@@ -14,6 +14,7 @@ with open("data/user_ids.txt", "r") as rf:
     data = rf.read().split("\n")[:-1]
 
 with open("data/user_scores.csv", "w") as wf:
+    wf.write("Handle,ID,score\n")
     for tweeter_id in data:
         handle = API.get_user(tweeter_id).screen_name
         print("Getting user %s... (%s)" % (handle, tweeter_id))
